@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <!-- 顶部标题条 -->
-    <div class="page-top">
+    <div class="page-top" :style="topStyle">
       <div class="title">{{ title }}</div>
       <slot name="top-extra" />
     </div>
@@ -42,6 +42,8 @@ export default {
   name: "BigScreen",
   props: {
     title: { type: String, default: "" },
+    // 允许个别页面微调顶部高度（例如奉新页原来是 height: 4%）
+    topStyle: { type: [Object, String], default: () => ({}) },
   },
 };
 </script>

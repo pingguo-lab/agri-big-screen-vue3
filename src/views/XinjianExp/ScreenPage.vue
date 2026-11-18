@@ -1,120 +1,12 @@
+
 <template>
-  <div class="page">
-    <!--头部-->
-    <div class="page-top">
-      <div class="title">智慧农业可视化大屏</div>
-    </div>
-    <div class="page-content">
-      <div class="left">
+  <BigScreen title="智慧农业可视化大屏">
+    <template #left>
         <div class="left-item1">
           <div class="alltitle">
             <img src="../../assets/images/new.png" /><b>实时数据</b>
           </div>
-          <div class="current-wrap border">
-            <!-- 第一排数据 -->
-            <div class="wrap">
-              <!-- <div class="wrap-item">
-                <div><img src="../../assets/images/ph.png" class="img-h2" /></div>
-                <div class="text-h1">
-                  <b class="b-size">{{ soilPH }}</b>
-                </div>
-                <div class="text-h2">土壤PH值</div>
-              </div>
-              <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/conduct.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ soilConduct }}</b
-                  >us/cm
-                </div>
-                <div class="text-h2">土壤电导率</div>
-              </div> -->
-              <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/airtem.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ real_airTemData }}</b
-                  >℃
-                </div>
-                <div class="text-h2">空气温度</div>
-              </div>
-              <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/airhum.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ real_airHumData }}</b
-                  >%rh
-                </div>
-                <div class="text-h2">空气湿度</div>
-              </div>
-              <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/co2.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ co2Data }}</b
-                  >ppm
-                </div>
-                <div class="text-h2">CO2浓度</div>
-              </div>
-              <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/airpr.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ airPre }}</b
-                  >kpa
-                </div>
-                <div class="text-h2">大气压</div>
-              </div>
-              <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/sunlight.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ real_illuminance }}</b
-                  >lx
-                </div>
-                <div class="text-h2">光照强度</div>
-              </div>
-            </div>
-            <!-- 第二排数据 -->
-            <div class="wrap">
-              <!-- <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/soiltem.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ real_soilTemData }}</b
-                  >℃
-                </div>
-                <div class="text-h2">土壤温度</div>
-              </div>
-              <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/soilhum.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ real_soilHumData }}</b
-                  >%rh
-                </div>
-                <div class="text-h2">土壤湿度</div>
-              </div> -->
-              <div class="wrap-item">
-                <div>
-                  <img src="../../assets/images/sunradio.png" class="img-h2" />
-                </div>
-                <div class="text-h1">
-                  <b class="b-size">{{ real_sunData }}</b
-                  >W/(㎡)
-                </div>
-                <div class="text-h2">太阳辐射</div>
-              </div>
-            </div>
-          </div>
+          <MetricGrid :items="metrics" />
         </div>
         <div class="left-item">
           <div class="alltitle">
@@ -129,8 +21,9 @@
             :cTemTime="arrivedTime"
           ></TemCurve>
         </div>
-      </div>
-      <div class="center" style="position: relative">
+    </template>
+
+    <template #center>
         <div class="center-top">
           <div
             style="width: 50%; height: 8rem; margin-left: 5%; margin-right: 5%"
@@ -211,8 +104,9 @@
             ></div>
           </swiper>
         </div>
-      </div>
-      <div class="right">
+    </template>
+
+    <template #right>
         <div
           class="right-item1"
           style="
@@ -297,10 +191,9 @@
             :cLightTime="arrivedTime"
           ></LightCurve>
         </div>
-      </div>
-    </div>
-    <div class="page-bottom">
-      <div class="bottom-left">
+    </template>
+
+    <template #bottom-left>
         <div class="alltitle">
           <img src="../../assets/images/hum.png" /><b>湿度</b>
         </div>
@@ -312,8 +205,9 @@
           :cSoilHumData="soilHumData"
           :cHumTime="arrivedTime"
         ></HumCurve>
-      </div>
-      <div class="bottom-center">
+    </template>
+
+    <template #bottom-center>
         <div class="alltitle">
           <img src="../../assets/images/water.png" /><b>雨量、蒸发量</b>
         </div>
@@ -325,8 +219,9 @@
           :cSteamData="steamData"
           :cWaterTime="waterArrivedTime"
         ></WaterBar1>
-      </div>
-      <div class="bottom-right">
+    </template>
+
+    <template #bottom-right>
         <div class="alltitle">
           <img src="../../assets/images/sun.png" /><b>太阳辐射量</b>
         </div>
@@ -337,9 +232,8 @@
           :cSunData="sunData"
           :cSunTime="arrivedTime"
         ></SunBar>
-      </div>
-    </div>
-  </div>
+    </template>
+  </BigScreen>
 </template>
 <script>
 import axios from "axios";
@@ -351,6 +245,18 @@ import SunBar from "../../components/large-cpns/SunBar.vue";
 import Video1 from "../../components/large-cpns/Video1.vue";
 import WindDirection from "../../components/large-cpns/WindDirection.vue";
 import { swiper, swiperSlide, directive } from "@/compat/swiper";
+import BigScreen from "../../components/layout/BigScreen.vue";
+import MetricGrid from "../../components/layout/MetricGrid.vue";
+import phIcon from "../../assets/images/ph.png";
+import conductIcon from "../../assets/images/conduct.png";
+import airtemIcon from "../../assets/images/airtem.png";
+import airhumIcon from "../../assets/images/airhum.png";
+import co2Icon from "../../assets/images/co2.png";
+import airprIcon from "../../assets/images/airpr.png";
+import sunlightIcon from "../../assets/images/sunlight.png";
+import soiltemIcon from "../../assets/images/soiltem.png";
+import soilhumIcon from "../../assets/images/soilhum.png";
+import sunradioIcon from "../../assets/images/sunradio.png";
 
 export default {
   data() {
@@ -424,6 +330,23 @@ export default {
     //this.updateTime();
     this.initData();
     this.updateData();
+  },
+  computed: {
+    // 实时指标：配置化，模板里只留一行 <MetricGrid :items="metrics" />
+    metrics() {
+      return [
+      { icon: phIcon, value: this.soilPH, unit: "", label: "土壤PH值" },
+      { icon: conductIcon, value: this.soilConduct, unit: "us/cm", label: "土壤电导率" },
+      { icon: airtemIcon, value: this.real_airTemData, unit: "℃", label: "空气温度" },
+      { icon: airhumIcon, value: this.real_airHumData, unit: "%rh", label: "空气湿度" },
+      { icon: co2Icon, value: this.co2Data, unit: "ppm", label: "CO2浓度" },
+      { icon: airprIcon, value: this.airPre, unit: "kpa", label: "大气压" },
+      { icon: sunlightIcon, value: this.real_illuminance, unit: "lx", label: "光照强度" },
+      { icon: soiltemIcon, value: this.real_soilTemData, unit: "℃", label: "土壤温度" },
+      { icon: soilhumIcon, value: this.real_soilHumData, unit: "%rh", label: "土壤湿度" },
+      { icon: sunradioIcon, value: this.real_sunData, unit: "W/(㎡)", label: "太阳辐射" },
+      ];
+    },
   },
   methods: {
     getTime() {
@@ -583,6 +506,8 @@ export default {
   },
 
   components: {
+    BigScreen,
+    MetricGrid,
     TemCurve,
     HumCurve,
     LightCurve,
