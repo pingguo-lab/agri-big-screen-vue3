@@ -7,7 +7,7 @@
 （后端为 HTTP 接口，HTTPS 页面会拦截请求，因此在线版会自动降级为**示例数据**，控制台会打印 `[mock]`；
 本地开发连的是真实网关。）
 
-![首页](预览-Vue3首页.png)
+![首页](docs/screenshots/预览-Vue3首页.png)
 
 ---
 
@@ -167,7 +167,8 @@ npm run build      # 产物在 dist/
 │   ├── migrate-vue3.cjs       批量语法转换（幂等）
 │   └── refactor-jgs-to-bigscreen.cjs  页面结构重构示例
 ├── deploy/                    GitHub Pages 发布脚本与 workflow 示例
-├── 课程/                      本项目精读课程（01–04 课）
+├── docs/screenshots/          截图（含 Vue2 / Vue3 逐像素对比图）
+├── 课程/                      精读课程（01–04 课）+ Vue2 存档
 ├── VUE3-迁移说明.md            迁移细节、踩坑记录、已知问题
 └── 重构指南.md                 16 个页面组件化的方法与清单
 ```
