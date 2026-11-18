@@ -1,9 +1,10 @@
+// 用法：node scripts/migrate-vue3.cjs（在项目根目录执行）
 /* eslint-disable */
 // Vue2 → Vue3 批量语法转换脚本（一次性工具，不参与构建）
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = path.resolve(__dirname, "src");
+const ROOT = path.resolve(__dirname, "..", "src");
 const SKIP_DIRS = ["compat"];
 const SKIP_FILES = ["main.js", "router/index.js", "store/store.js"];
 

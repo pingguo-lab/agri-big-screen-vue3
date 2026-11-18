@@ -163,8 +163,13 @@ npm run build      # 产物在 dist/
 │   ├── components/            首页卡片 13 个 + 图表/视频组件 29 个
 │   ├── views/                 16 个基地大屏 + 首页/登录/导出/错误页
 │   └── assets/                ECharts 主题、地图 GeoJSON、图片素材
+├── scripts/                   迁移与重构脚本（可重跑）
+│   ├── migrate-vue3.cjs       批量语法转换（幂等）
+│   └── refactor-jgs-to-bigscreen.cjs  页面结构重构示例
+├── deploy/                    GitHub Pages 发布脚本与 workflow 示例
 ├── 课程/                      本项目精读课程（01–04 课）
-└── VUE3-迁移说明.md            迁移细节、踩坑记录、已知问题
+├── VUE3-迁移说明.md            迁移细节、踩坑记录、已知问题
+└── 重构指南.md                 16 个页面组件化的方法与清单
 ```
 
 ---
@@ -229,5 +234,25 @@ npm run build      # 产物在 dist/
 
 ## 文档
 
-- [VUE3-迁移说明.md](VUE3-迁移说明.md) —— 完整迁移记录、踩坑清单、已知问题
-- [课程/00-课程大纲.md](课程/00-课程大纲.md) —— 4 课精读（启动链路 / 路由导航 / 请求层 / Vue2→Vue3 语法）
+### 迁移与重构
+
+- [VUE3-迁移说明.md](VUE3-迁移说明.md) —— 完整迁移记录、6 个踩坑、已知问题与后续优化
+- [重构指南.md](重构指南.md) —— `BigScreen`/`MetricGrid` 的设计、改造步骤、其余 15 个页面的清单
+
+### 精读课程（4 课）
+
+| 课 | 主题 | 讲义 |
+|---|---|---|
+| 01 | 启动链路：从 `npm run serve` 到第一个像素 | [01-启动链路（Vue3版）.md](课程/01-启动链路（Vue3版）.md) |
+| 02 | 路由与首页导航：23 条路由、8 张卡片地图 | [02-路由与首页导航（Vue3版）.md](课程/02-路由与首页导航（Vue3版）.md) |
+| 03 | 请求层：解包层级、两代接口、topicId | [03-请求层（Vue3版）.md](课程/03-请求层（Vue3版）.md) |
+| 04 | Vue 2 → Vue 3 语法精讲（12 条对照 + `markRaw`） | [04-Vue2到Vue3语法精讲.md](课程/04-Vue2到Vue3语法精讲.md) |
+
+### 迁移是怎么做的（脚本化，而非手工改 50 个文件）
+
+```bash
+node scripts/migrate-vue3.cjs     # 幂等：beforeDestroy→beforeUnmount、.sync→v-model、slot→#slot…
+node scripts/refactor-jgs-to-bigscreen.cjs   # 页面结构重构示例
+```
+
+`migrate-vue3.cjs` 覆盖 47 个文件、9 类语法替换（数量统计见 [VUE3-迁移说明.md](VUE3-迁移说明.md)）。

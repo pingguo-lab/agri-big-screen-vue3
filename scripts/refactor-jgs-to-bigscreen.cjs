@@ -1,7 +1,8 @@
+// 用法：node scripts/refactor-jgs-to-bigscreen.cjs（把井冈山页改成 BigScreen + MetricGrid 结构）
 /* 一次性重构脚本：把 JgMountain/ScreenPage.vue 改成 BigScreen + MetricGrid 结构 */
 const fs = require("fs");
 
-const F = "src/views/JgMountain/ScreenPage.vue";
+const F = require("path").join(__dirname, "..", "src/views/JgMountain/ScreenPage.vue");
 let text = fs.readFileSync(F, "utf8");
 let lines = text.split("\n");
 
