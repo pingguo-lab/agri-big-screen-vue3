@@ -1,0 +1,38 @@
+{
+  "name": "agri-big-screen-vue3",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "core-js": "^3.36.0",
+    "dayjs": "^1.11.7",
+    "echarts": "^5.4.3",
+    "echarts-gl": "^2.0.9",
+    "echarts-liquidfill": "^3.1.0",
+    "element-plus": "^2.7.0",
+    "ezuikit-js": "^0.2.9",
+    "hls.js": "^1.6.2",
+    "mqtt": "^4.3.8",
+    "three": "^0.157.0",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0",
+    "vuex": "^4.1.0",
+    "axios": "^1.6.8"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.0",
+    "sass": "^1.71.1",
+    "sass-loader": "^13.3.3"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

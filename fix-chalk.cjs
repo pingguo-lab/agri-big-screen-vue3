@@ -1,0 +1,12 @@
+﻿const fs=require("fs");
+const f="src/assets/js/chalk.js";
+let c=fs.readFileSync(f,"utf8");
+const orig=c.length;
+// 把 UMD 包装改成 ESM：顶部换成 import，尾部去掉 })); 
+c=c.replace(/\(function \(root, factory\) \{[\s\S]*?\}\(this, function \(exports, echarts\) \{/, 'import * as echarts from "echarts";\n');
+c=c.replace(/\}\)\);\s*$/, "");
+fs.writeFileSync(f,c,"utf8");
+console.log("原长度:",orig,"新长度:",c.length);
+console.log("还有 exports 引用:",/\bexports\b/.test(c));
+console.log("还含 import echarts:",/^import \* as echarts/m.test(c));
+console.log("尾部:",JSON.stringify(c.slice(-40)));
