@@ -1,98 +1,125 @@
-import { defineComponent, h } from "vue";
+/**
+ * data-view 兼容层（Vue 3）
+ *
+ * 原来的 @jiaminghi/data-view 只支持 Vue 2。这里改用社区维护的 Vue 3 移植版
+ * @kjgl77/datav-vue3 —— 组件名、props 与原库一致，因此页面模板无需改动，
+ * 边框流光、滚动榜等视觉效果都能恢复。
+ *
+ * 对上层暴露两套名字：
+ *   - 驼峰：borderBox1 / decoration5 / scrollBoard（业务代码 import 用）
+ *   - 短横线：dv-border-box-1 / dv-decoration-5 / dv-scroll-board（模板里用）
+ */
+import {
+  BorderBox1,
+  BorderBox8,
+  BorderBox10,
+  BorderBox11,
+  BorderBox12,
+  BorderBox13,
+  Decoration5,
+} from "@kjgl77/datav-vue3";
+import "@kjgl77/datav-vue3/dist/style.css";
+import { computed, h, ref, onMounted, onBeforeUnmount } from "vue";
 
 /**
- * @jiaminghi/data-view 是 Vue 2 专用库，Vue 3 无法使用。
- * 这里提供"占位实现"：保留组件名与插槽，视觉上用简洁描边代替原来的科技感边框。
- * 想恢复视觉效果，可以换成 Vue 3 版的大屏组件库（如 @kjgl77/datav-vue3）。
+ * 自研滚动表 / 滚动榜
+ * 说明：datav-vue3 的 scroll-board 与原库行为差异较大（行高撑满、表头错位），
+ * 这里按原库的视觉规格自己实现一份，配置字段保持一致：
+ *   { header, data, headerBGC, oddRowBGC, evenRowBGC, headerHeight, rowHeight, rowNum, waitTime, align }
  */
-// 尺寸交给 .dv-compat-box（见 compat.css），不能写内联，否则会覆盖页面的类样式
+const ScrollBoard = {
+  name: "ScrollBoardCompat",
+  props: { config: { type: Object, default: () => ({}) } },
+  setup(props) {
+    const offset = ref(0);
+    let timer = null;
 
-function makeBox(name) {
-  return defineComponent({
-    name,
-    setup(_, { slots }) {
-      return () => h("div", { class: "dv-compat-box" }, slots.default ? slots.default() : []);
-    },
-  });
-}
+    const cfg = computed(() => ({
+      headerHeight: 30,
+      rowHeight: 30,
+      rowNum: 5,
+      waitTime: 2000,
+      headerBGC: "rgba(0,130,255,0.35)",
+      oddRowBGC: "rgba(0,130,255,0.12)",
+      evenRowBGC: "transparent",
+      ...(props.config || {}),
+    }));
 
-export const borderBox1 = makeBox("borderBox1");
-export const borderBox8 = makeBox("borderBox8");
-export const borderBox10 = makeBox("borderBox10");
-export const borderBox11 = makeBox("borderBox11");
-export const borderBox12 = makeBox("borderBox12");
-export const borderBox13 = makeBox("borderBox13");
+    const rows = computed(() => (cfg.value.data || []).map((r) => (Array.isArray(r) ? r : [r])));
+    const visible = computed(() => {
+      const n = cfg.value.rowNum || 5;
+      if (rows.value.length <= n) return rows.value;
+      return Array.from({ length: n }, (_, i) => rows.value[(offset.value + i) % rows.value.length]);
+    });
 
-export const decoration5 = defineComponent({
-  name: "decoration5",
-  setup(_, { slots }) {
+    onMounted(() => {
+      timer = setInterval(() => {
+        if (rows.value.length > (cfg.value.rowNum || 5)) {
+          offset.value = (offset.value + 1) % rows.value.length;
+        }
+      }, cfg.value.waitTime || 2000);
+    });
+    onBeforeUnmount(() => timer && clearInterval(timer));
+
+    const cell = (text, i) =>
+      h(
+        "span",
+        { key: i, style: { flex: 1, textAlign: "center", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" } },
+        String(text == null ? "" : text)
+      );
+
     return () =>
       h(
         "div",
-        {
-          class: "dv-compat-decoration",
-          style: { width: "100%", height: "100%", background: "rgba(0,191,255,0.12)", overflow: "hidden" },
-        },
-        slots.default ? slots.default() : []
-      );
-  },
-});
-
-const listStyle = { width: "100%", height: "100%", overflow: "hidden", color: "#fff", fontSize: "12px" };
-
-export const scrollBoard = defineComponent({
-  name: "scrollBoard",
-  props: {
-    config: { type: Object, default: () => ({}) },
-    option: { type: Object, default: () => ({}) },
-  },
-  setup(props) {
-    const rows = (cfg) => {
-      if (!cfg) return [];
-      if (Array.isArray(cfg.data)) return cfg.data;
-      return [];
-    };
-    return () => {
-      const cfg = props.config || props.option || {};
-      const data = rows(cfg);
-      return h(
-        "div",
-        { class: "dv-compat-scroll-board", style: listStyle },
-        data.map((row, i) =>
-          h(
-            "div",
-            {
-              key: i,
-              style: {
-                display: "flex",
-                lineHeight: "24px",
-                borderBottom: "1px solid rgba(0,191,255,0.15)",
+        { style: { width: "100%", height: "100%", overflow: "hidden", fontSize: "12px", color: "#fff" } },
+        [
+          cfg.value.header
+            ? h(
+                "div",
+                {
+                  key: "h",
+                  style: {
+                    display: "flex",
+                    height: cfg.value.headerHeight + "px",
+                    lineHeight: cfg.value.headerHeight + "px",
+                    background: cfg.value.headerBGC,
+                    fontWeight: "bold",
+                  },
+                },
+                cfg.value.header.map(cell)
+              )
+            : null,
+          ...visible.value.map((row, ri) =>
+            h(
+              "div",
+              {
+                key: "r" + ri,
+                style: {
+                  display: "flex",
+                  height: cfg.value.rowHeight + "px",
+                  lineHeight: cfg.value.rowHeight + "px",
+                  background: ri % 2 ? cfg.value.evenRowBGC : cfg.value.oddRowBGC,
+                },
               },
-            },
-            (Array.isArray(row) ? row : [row]).map((cell, j) =>
-              h("span", { key: j, style: { flex: 1, textAlign: "center", color: cfg.color || "#00d8ff" } }, String(cell))
+              row.map(cell)
             )
-          )
-        )
+          ),
+        ]
       );
-    };
   },
-});
+};
 
-export const scrollRankingBoard = defineComponent({
-  name: "scrollRankingBoard",
-  props: {
-    config: { type: Object, default: () => ({}) },
-    option: { type: Object, default: () => ({}) },
-  },
+const ScrollRankingBoard = {
+  name: "ScrollRankingBoardCompat",
+  props: { config: { type: Object, default: () => ({}) } },
   setup(props) {
-    return () => {
-      const cfg = props.config || props.option || {};
-      const data = Array.isArray(cfg.data) ? cfg.data : [];
-      return h(
+    const cfg = computed(() => ({ rowHeight: 30, rowNum: 5, unit: "", ...(props.config || {}) }));
+    const rows = computed(() => cfg.value.data || []);
+    return () =>
+      h(
         "div",
-        { class: "dv-compat-ranking", style: listStyle },
-        data.map((item, i) =>
+        { style: { width: "100%", height: "100%", overflow: "hidden", fontSize: "12px", color: "#fff" } },
+        rows.value.slice(0, cfg.value.rowNum).map((item, i) =>
           h(
             "div",
             {
@@ -100,43 +127,57 @@ export const scrollRankingBoard = defineComponent({
               style: {
                 display: "flex",
                 justifyContent: "space-between",
-                lineHeight: "24px",
-                borderBottom: "1px solid rgba(0,191,255,0.15)",
-                padding: "0 6px",
+                height: cfg.value.rowHeight + "px",
+                lineHeight: cfg.value.rowHeight + "px",
+                padding: "0 8px",
+                background: i % 2 ? "transparent" : "rgba(0,130,255,0.12)",
               },
             },
             [
-              h("span", { style: { color: "#00d8ff" } }, String(item.name ?? item.label ?? "")),
-              h("span", {}, String(item.value ?? "")),
+              h("span", { style: { color: "#00d8ff" } }, String(item.name == null ? "" : item.name)),
+              h("span", {}, String(item.value == null ? "" : item.value) + (cfg.value.unit || "")),
             ]
           )
         )
       );
-    };
   },
-});
+};
+
+// ---- 驼峰导出（兼容原项目 import { borderBox8 } 的写法）----
+export const borderBox1 = BorderBox1;
+export const borderBox8 = BorderBox8;
+export const borderBox10 = BorderBox10;
+export const borderBox11 = BorderBox11;
+export const borderBox12 = BorderBox12;
+export const borderBox13 = BorderBox13;
+export const decoration5 = Decoration5;
+export const scrollBoard = ScrollBoard;
+export const scrollRankingBoard = ScrollRankingBoard;
+
+const registry = [
+  ["dv-border-box-1", BorderBox1],
+  ["dv-border-box-8", BorderBox8],
+  ["dv-border-box-10", BorderBox10],
+  ["dv-border-box-11", BorderBox11],
+  ["dv-border-box-12", BorderBox12],
+  ["dv-border-box-13", BorderBox13],
+  ["dv-decoration-5", Decoration5],
+  ["dv-scroll-board", scrollBoard],
+  ["dv-scroll-ranking-board", scrollRankingBoard],
+  // 兼容 components: { borderBox8 } 这种局部注册的写法
+  ["borderBox1", BorderBox1],
+  ["borderBox8", BorderBox8],
+  ["borderBox10", BorderBox10],
+  ["borderBox11", BorderBox11],
+  ["borderBox12", BorderBox12],
+  ["borderBox13", BorderBox13],
+  ["decoration5", Decoration5],
+  ["scrollBoard", ScrollBoard],
+  ["scrollRankingBoard", ScrollRankingBoard],
+];
 
 export default {
   install(app) {
-    app.component("dv-border-box-1", borderBox1);
-    app.component("dv-border-box-8", borderBox8);
-    app.component("dv-border-box-10", borderBox10);
-    app.component("dv-border-box-11", borderBox11);
-    app.component("dv-border-box-12", borderBox12);
-    app.component("dv-border-box-13", borderBox13);
-    app.component("dv-decoration-5", decoration5);
-    app.component("dv-scroll-board", scrollBoard);
-    app.component("dv-scroll-ranking-board", scrollRankingBoard);
-
-    // 兼容以驼峰组件名注册的写法（components: { borderBox8 }）
-    app.component("borderBox1", borderBox1);
-    app.component("borderBox8", borderBox8);
-    app.component("borderBox10", borderBox10);
-    app.component("borderBox11", borderBox11);
-    app.component("borderBox12", borderBox12);
-    app.component("borderBox13", borderBox13);
-    app.component("decoration5", decoration5);
-    app.component("scrollBoard", scrollBoard);
-    app.component("scrollRankingBoard", scrollRankingBoard);
+    registry.forEach(([name, comp]) => app.component(name, comp));
   },
 };

@@ -7,6 +7,8 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@kjgl77/datav-vue3": "^1.7.4",
+    "axios": "^1.6.8",
     "core-js": "^3.36.0",
     "dayjs": "^1.11.7",
     "echarts": "^5.4.3",
@@ -19,8 +21,7 @@
     "three": "^0.157.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vuex": "^4.1.0",
-    "axios": "^1.6.8"
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.8",
