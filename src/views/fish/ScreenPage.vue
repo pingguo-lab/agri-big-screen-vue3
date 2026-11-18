@@ -322,6 +322,7 @@ export default {
     }
     animate();
 
+
     // 创建立方体
     const geometries = [
       new THREE.BoxGeometry(

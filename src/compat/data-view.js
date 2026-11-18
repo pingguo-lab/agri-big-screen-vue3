@@ -5,20 +5,13 @@ import { defineComponent, h } from "vue";
  * 这里提供"占位实现"：保留组件名与插槽，视觉上用简洁描边代替原来的科技感边框。
  * 想恢复视觉效果，可以换成 Vue 3 版的大屏组件库（如 @kjgl77/datav-vue3）。
  */
-const boxStyle = {
-  width: "100%",
-  height: "100%",
-  boxSizing: "border-box",
-  position: "relative",
-  border: "1px solid rgba(0, 191, 255, 0.35)",
-  boxShadow: "inset 0 0 12px rgba(0, 191, 255, 0.15)",
-};
+// 尺寸交给 .dv-compat-box（见 compat.css），不能写内联，否则会覆盖页面的类样式
 
 function makeBox(name) {
   return defineComponent({
     name,
     setup(_, { slots }) {
-      return () => h("div", { class: "dv-compat-box", style: boxStyle }, slots.default ? slots.default() : []);
+      return () => h("div", { class: "dv-compat-box" }, slots.default ? slots.default() : []);
     },
   });
 }

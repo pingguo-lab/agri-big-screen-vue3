@@ -177,6 +177,7 @@ import windDirection from "./cpns/WindDirection";
 import PondDataLine from "./cpns/PondDataLine";
 import PondDataBar from "./cpns/PondDataBar";
 import axios from "axios";
+import { fetchAquaDashboard } from "@/api/pond";
 import Element from "element-plus";
 import { scrollBoard, scrollRankingBoard } from "@/compat/data-view";
 import * as echarts from "echarts";
@@ -301,165 +302,52 @@ export default {
       this.getData(); // 获取数据
       this.getWeatherData(); //获取天气数据
     },
-    /* 获取数据 */
-    getData() {
-      this.$get("http://121.5.9.113:8090/api/v1/allMsg", {
-        topicId: "37", //获取部分数据
-        timeType: "realTime",
-      }).then((res) => {
-        console.log(res, "其他部分数据");
-        this.windSpeed = res.data[0].windSpeed; //风速赋值
-        this.windDirection = res.data[0].windDirection; //风向赋值
-        this.CO2 = res.data[0].co2; //二氧化碳赋值
-        this.humidity = res.data[0].humidity; //空气湿度赋值
-      });
-      this.$get("http://121.5.9.113:8090/api/v1/allMsg", {
-        topicId: "42", //A基地的池塘1数据
-        timeType: "hour",
-      }).then((res) => {
-        console.log(res, "A基地鱼塘1");
-        this.PondTime = res.data.map(function (item) {//将时间赋值
-          return item.receiveTime.slice(11, 13) + "点";
-        }).reverse().slice(13, 23);
-        this.APond1Data1 = res.data.map(function (item) {//将A基地池塘1的溶解氧赋值
-          return item.temp1;
-        }).reverse().slice(13, 23);
-        this.APond1Data2 = res.data.map(function (item) {//将A基地池塘1的PH赋值
-          return item.temp3;
-        }).reverse().slice(13, 23);
-        this.APond1Data3 = res.data.map(function (item) {//将A基地池塘1的氨氮含量赋值
-          return item.temp4;
-        }).reverse().slice(13, 23);
-      }), this.$get("http://121.5.9.113:8090/api/v1/allMsg", {
-        topicId: "43", //A基地的池塘2数据
-        timeType: "hour",
-      }).then((res) => {
-        console.log(res, "A基地鱼塘2");
-        this.APond2Data1 = res.data
-          .map(function (item) {
-            //将A基地池塘2的溶解氧赋值
-            return item.temp1;
-          })
-          .reverse()
-          .slice(13, 23);
-        this.APond2Data2 = res.data
-          .map(function (item) {
-            //将A基地池塘2的PH赋值
-            return item.temp3;
-          })
-          .reverse()
-          .slice(13, 23);
-        this.APond2Data3 = res.data
-          .map(function (item) {
-            //将A基地池塘2的氨氮含量赋值
-            return item.temp4;
-          })
-          .reverse()
-          .slice(13, 23);
-      }),
-        this.$get("http://121.5.9.113:8090/api/v1/allMsg", {
-          topicId: "44", //A基地的池塘3数据
-          timeType: "hour",
-        }).then((res) => {
-          console.log(res, "A基地鱼塘3");
-          this.APond3Data1 = res.data
-            .map(function (item) {
-              //将A基地池塘3的溶解氧赋值
-              return item.temp1;
-            })
-            .reverse()
-            .slice(13, 23);
-          this.APond3Data2 = res.data
-            .map(function (item) {
-              //将A基地池塘3的PH赋值
-              return item.temp3;
-            })
-            .reverse()
-            .slice(13, 23);
-          this.APond3Data3 = res.data
-            .map(function (item) {
-              //将A基地池塘3的氨氮含量赋值
-              return item.temp4;
-            })
-            .reverse()
-            .slice(13, 23);
-        }),
-        this.$get("http://121.5.9.113:8090/api/v1/allMsg", {
-          topicId: "40", //B基地的池塘1数据
-          timeType: "hour",
-        }).then((res) => {
-          console.log(res, "B基地鱼塘1");
-          this.BPond1Data1 = res.data
-            .map(function (item) {
-              //将池塘1的溶解氧赋值
-              return item.temp1;
-            })
-            .reverse()
-            .slice(13, 23);
-          this.BPond1Data2 = res.data
-            .map(function (item) {
-              //将池塘1的PH赋值
-              return item.temp3;
-            })
-            .reverse()
-            .slice(13, 23);
-          this.BPond1Data3 = res.data
-            .map(function (item) {
-              //将池塘1的氨氮含量赋值
-              return item.temp4;
-            })
-            .reverse()
-            .slice(13, 23);
-        }),
-        this.$get("http://121.5.9.113:8090/api/v1/allMsg", {
-          topicId: "41", //B基地的池塘2数据
-          timeType: "hour",
-        }).then((res) => {
-          console.log(res, "B基地鱼塘2");
-          this.BPond2Data1 = res.data
-            .map(function (item) {
-              //将池塘2的溶解氧赋值
-              return item.temp1;
-            })
-            .reverse()
-            .slice(13, 23);
-          this.BPond2Data2 = res.data
-            .map(function (item) {
-              //将池塘2的PH赋值
-              return item.temp3;
-            })
-            .reverse()
-            .slice(13, 23);
-          this.Pond2Data3 = res.data
-            .map(function (item) {
-              //将池塘2的氨氮含量赋值
-              return item.temp4;
-            })
-            .reverse()
-            .slice(13, 23);
-        }),
-        this.$get("http://121.5.9.113:8090/api/v1/fishMsg/varieties", {
-        }).then((res) => { //价格数据
-          this.FishName = res.data.map(function (item) {
-            return item[0].variety;
-          })
-          this.FishPrice1 = res.data.map(function (item) {
-            return item[0].price;
-          })
-          this.FishPrice2 = res.data.map(function (item) {
-            return item[1].price;
-          })
-          this.FishPrice3 = res.data.map(function (item) {
-            return item[2].price;
-          })
-          this.FishPrice4 = res.data.map(function (item) {
-            return item[3].price;
-          })
-          this.FishDate = res.data[0].map(function (item) {
-            return item.createTime.slice(8, 10) + '日';
-          })
-          console.log(res.data, "价格数据");
-        })
+    /* 获取数据：具体请求收敛到 src/api/pond.js */
+    async getData() {
+      try {
+        const { overview, a1, a2, a3, b1, b2, price } = await fetchAquaDashboard();
+
+        // 总览：风速 / 风向 / CO2 / 空气湿度
+        this.windSpeed = overview.windSpeed;
+        this.windDirection = overview.windDirection;
+        this.CO2 = overview.co2;
+        this.humidity = overview.humidity;
+
+        // 时间轴（沿用 A 基地 1 号池塘的时间）
+        this.PondTime = a1.time;
+
+        // A 基地三个池塘：溶解氧 / PH / 氨氮
+        this.APond1Data1 = a1.dissolvedOxygen;
+        this.APond1Data2 = a1.ph;
+        this.APond1Data3 = a1.ammoniaNitrogen;
+        this.APond2Data1 = a2.dissolvedOxygen;
+        this.APond2Data2 = a2.ph;
+        this.APond2Data3 = a2.ammoniaNitrogen;
+        this.APond3Data1 = a3.dissolvedOxygen;
+        this.APond3Data2 = a3.ph;
+        this.APond3Data3 = a3.ammoniaNitrogen;
+
+        // B 基地两个池塘
+        this.BPond1Data1 = b1.dissolvedOxygen;
+        this.BPond1Data2 = b1.ph;
+        this.BPond1Data3 = b1.ammoniaNitrogen;
+        this.BPond2Data1 = b2.dissolvedOxygen;
+        this.BPond2Data2 = b2.ph;
+        // 注意：原代码这里写的是 Pond2Data3（少个 B），为保证模板行为不变先保持一致
+        this.Pond2Data3 = b2.ammoniaNitrogen;
+
+        // 鱼价
+        if (price) {
+          this.FishName = price.names;
+          this.FishPrice1 = price.price1;
+          this.FishPrice2 = price.price2;
+          this.FishPrice3 = price.price3;
+          this.FishPrice4 = price.price4;
+          this.FishDate = price.dates;
+        }
+      } catch (err) {
+        console.error("余干水产取数失败", err);
+      }
     },
     /*从高德地图获取天气预报数据*/
     getWeatherData() {

@@ -1,0 +1,15 @@
+/*
+ * data-view 兼容层的样式
+ *
+ * 关键点：尺寸必须写在 class 里，不能写内联 style。
+ * 原因：页面会用类（如 `.box-left-top { height: 150px }`）覆盖尺寸，
+ * 内联 style 优先级最高，会把这些覆盖全部顶掉 —— 曾经导致鱼塘页的 3D 容器被挤出可视区。
+ */
+.dv-compat-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 191, 255, 0.35);
+  box-shadow: inset 0 0 12px rgba(0, 191, 255, 0.15);
+}

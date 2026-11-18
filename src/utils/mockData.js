@@ -47,6 +47,12 @@ export function makeRecord(i = 0, base = new Date()) {
     windDirection: (i % 8 + 8) % 8,              // 0~7 编码
     rainfall: round(Math.max(0, wave * 1.2), 2),
     allRainfall: round(12 + i * 0.3, 2),
+
+    // 水产页面专用：后端把「溶解氧/溶氧比/PH/氨氮」塞在 temp1~temp4
+    temp1: round(6.5 + wave * 1.2, 2),           // 溶解氧 mg/L
+    temp2: round(0.8 + Math.abs(wave) * 0.1, 2), // 溶氧比
+    temp3: round(7.6 + wave * 0.4, 2),           // PH
+    temp4: round(0.5 + Math.abs(wave) * 0.3, 2), // 氨氮 mg/L
   };
 }
 

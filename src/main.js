@@ -8,6 +8,7 @@ import * as echarts from "echarts";
 import axios from "axios";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css"; // Vue 2 是 element-ui/lib/theme-chalk/index.css
+import "./compat/compat.css";       // data-view 兼容层的尺寸/边框样式
 
 // 本地工具
 import { postRequest, getRequest } from "./utils/request.js";

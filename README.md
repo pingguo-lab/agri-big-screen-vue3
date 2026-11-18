@@ -212,7 +212,8 @@ npm run build      # 产物在 dist/
 
 ## 已知问题（Roadmap）
 
-- [ ] `/#/fish` 的 Three.js 三维场景未渲染（canvas 已创建、无报错，疑似 `updateSun()`/动画循环差异）
+- [x] ~~`/#/fish` 的 Three.js 三维场景未渲染~~ —— 已修复：根因是 data-view 兼容层给盒子加了内联 `height:100%`，
+      把页面自己设置的 `.box-left-top{height:150px}` 覆盖掉，导致 3D 容器被挤出可视区。尺寸改由 class 控制后恢复。
 - [ ] `data-view` 兼容层只做了最小实现：边框退化为描边、滚动榜变静态列表
 - [ ] 16 个 `ScreenPage.vue` 存在大量复制粘贴，待抽公共布局组件
 - [ ] 55MB 图片素材未压缩（可用 webp/avif + 模型 Draco）
