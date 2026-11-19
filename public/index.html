@@ -119,44 +119,9 @@
     }
 
 
-    .loaded #loader-wrapper .loader-section.section-left {
-      -webkit-transform: translateX(-100%);
-      -ms-transform: translateX(-100%);
-      transform: translateX(-100%);
-      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-    }
-
-    .loaded #loader-wrapper .loader-section.section-right {
-      -webkit-transform: translateX(100%);
-      -ms-transform: translateX(100%);
-      transform: translateX(100%);
-      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-    }
-
-    .loaded #loader {
-      opacity: 0;
-      -webkit-transition: all 0.3s ease-out;
-      transition: all 0.3s ease-out;
-    }
-
-    .loaded #loader-wrapper {
-      visibility: hidden;
-      -webkit-transform: translateY(-100%);
-      -ms-transform: translateY(-100%);
-      transform: translateY(-100%);
-      -webkit-transition: all 0.3s 1s ease-out;
-      transition: all 0.3s 1s ease-out;
-    }
-
-    .no-js #loader-wrapper {
-      display: none;
-    }
-
-    .no-js h1 {
-      color: #222222;
-    }
+    /* 说明：这一段 .loaded 动画从未被触发过（没有 JS 会加 loaded 类），
+       首屏 loader 实际上是靠 app.mount('#app') 替换 #app 内容而消失的，
+       所以按"删死代码"原则移除了，共 38 行。 */
 
     #loader-wrapper .load_title {
       font-family: 'Open Sans';
