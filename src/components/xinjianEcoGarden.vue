@@ -13,7 +13,7 @@
         <span class="title"></span>
         <div
           class="echartInfo"
-          id="echartInfo6"
+          ref="echartInfo"
           style="position: relative;margin-top:2.5rem;width: 7rem;height: 7rem;"
         ></div>
       </div>
@@ -115,10 +115,6 @@ export default {
         ],
       },
       swiperOption: {
-        pagination: {
-          el: ".pagination-home",
-          clickable: true, // 配置点击原点可以切换
-        },
         loop: true, // 开启循环模式
         autoplay: {
           delay: 10000, // 切换时间间隔
@@ -138,8 +134,8 @@ export default {
   methods: {
     initEchartInfo() {
       const echarts = this.$echarts; // Vue3：用全局属性，不再 require
-      echarts.init(document.getElementById("echartInfo6")).dispose(); //销毁，这一步是考虑到有时候会动态改变地图data数据，先销毁再初始化
-      let myChart = echarts.init(document.getElementById("echartInfo6")); //初始化
+      echarts.init(this.$refs.echartInfo).dispose(); //销毁，这一步是考虑到有时候会动态改变地图data数据，先销毁再初始化
+      let myChart = echarts.init(this.$refs.echartInfo); //初始化
       //let myChart = echarts.init(this.$refs.echartInfo);//初始化(ref)
 
       echarts.registerMap("xinjian", xinjianMP); //这一步是引用JSON文件，第一个参数需要和上面series.map的名称对应
