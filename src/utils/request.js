@@ -38,36 +38,11 @@ axios.interceptors.request.use(
  */
 
 export function postRequest(url, params) {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(url, params)
-      .then((res) => {
-        resolve(res);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+  // axios 本身返回 Promise，这里多包一层 new Promise 属于冗余：
+  // 成功时 resolve(res)、失败时 reject(err) 与直接 return 完全等价，
+  // 而且多包一层只会多一个微任务、多一层调用栈（报错时栈更深）。
+  return axios.post(url, params);
 }
-
-// /**
-//  * body传参的post请求
-//  * @param {*} url
-//  * @param {*} data
-//  * @returns
-//  */
-// export function postBodyRequest(url, data) {
-//   return new Promise((resolve, reject) => {
-//     axios
-//       .post(url, data)
-//       .then((res) => {
-//         resolve(res);
-//       })
-//       .catch((err) => {
-//         reject(err);
-//       });
-//   });
-// }
 
 /**
  * @description GET请求封装
@@ -80,27 +55,24 @@ export function postRequest(url, params) {
  *     console.log('请求成功')}).catch(err => {console.log(err)})
  */
 export function getRequest(url, params) {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(url, { params: params })
-      .then((res) => {
-        const body = res.data;
-        // 降级：接口返回空数组时（例如该网关无历史数据），用示例数据兜底，避免整屏空白
-        const isEmpty =
-          body && Array.isArray(body.data) && body.data.length === 0;
-        if (isEmpty && isProjectApi(url)) {
-          resolve(buildMockResponse(url, params));
-          return;
-        }
-        resolve(body);
-      })
-      .catch((err) => {
-        // 降级：HTTPS 页面请求 HTTP 后端会被浏览器拦截，此时用示例数据保证能演示
-        if (isProjectApi(url)) {
-          resolve(buildMockResponse(url, params));
-          return;
-        }
-        reject(err);
-      });
-  });
+  // 这里同样不需要 new Promise：.then / .catch 直接返回的就是 Promise，
+  // 用 return 把结果"流"出去即可（注意 catch 里要把错误继续抛出去，不能吞掉）。
+  return axios
+    .get(url, { params: params })
+    .then((res) => {
+      const body = res.data;
+      // 降级：接口返回空数组时（例如该网关无历史数据），用示例数据兜底，避免整屏空白
+      const isEmpty = body && Array.isArray(body.data) && body.data.length === 0;
+      if (isEmpty && isProjectApi(url)) {
+        return buildMockResponse(url, params);
+      }
+      return body;
+    })
+    .catch((err) => {
+      // 降级：HTTPS 页面请求 HTTP 后端会被浏览器拦截，此时用示例数据保证能演示
+      if (isProjectApi(url)) {
+        return buildMockResponse(url, params);
+      }
+      return Promise.reject(err);
+    });
 }
